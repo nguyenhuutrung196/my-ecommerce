@@ -1,0 +1,522 @@
+/* =========================================
+   1. CORE ENGINE & CONFIGURATION
+   (Bộ não tính toán - Không chỉnh sửa logic)
+   ========================================= */
+:root {
+    /* --- A. THIẾT LẬP VIEWPORT (Đơn vị: px) --- */
+    --vp-min: 375; /* Màn hình Mobile chuẩn */
+    --vp-max: 1440; /* Màn hình Desktop chuẩn */
+
+    /* --- B. CẤU HÌNH MÀU SẮC (Design Tokens) --- */
+    /* Override Bootstrap Variables */
+    --bs-primary: #e04a2a;
+    --bs-primary-rgb: 224, 74, 42;
+    --bs-secondary: #2d3748;
+    --bs-success: #28a745;
+    --bs-info: #17a2b8;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+
+    --color-text-main: #2d3748;
+    --color-text-light: #718096;
+    --bg-body: #ffffff;
+    --bg-light: #f7fafc;
+
+    /* --- C. CÔNG THỨC TOÁN HỌC FLUID (Magic Formula) --- */
+    /* Công thức Linear Interpolation: y = mx + c
+       Input: --min (giá trị tại 375px) và --max (giá trị tại 1440px)
+       Output: Giá trị mượt mà ở giữa các màn hình
+    */
+    --vp-diff: calc(var(--vp-max) - var(--vp-min));
+    --fluid-screen: calc(100vw - (var(--vp-min) * 1px));
+    --fluid-bp: calc(var(--fluid-screen) / var(--vp-diff));
+
+    /* GỌI BIẾN NÀY ĐỂ SỬ DỤNG */
+    --calc: clamp(
+        (var(--min) * 1px),
+        (var(--min) * 1px) + (var(--max) - var(--min)) * var(--fluid-bp),
+        (var(--max) * 1px)
+    );
+}
+
+/* =========================================
+   2. GLOBAL RESET & BASE STYLES
+   ========================================= */
+
+/* Thiết lập rem chuẩn: 1rem = 10px (Dễ tính toán) */
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Mặc định Body: Mobile 14px -> Desktop 16px */
+    --min: 14;
+    --max: 16;
+    font-size: var(--calc);
+
+    font-family:
+        'Inter',
+        system-ui,
+        -apple-system,
+        sans-serif;
+    line-height: 1.6;
+    color: var(--color-text-main);
+    background-color: var(--bg-body);
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden; /* Chống tràn ngang do animation */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================
+   3. TYPOGRAPHY SYSTEM (H1-H6, P)
+   ========================================= */
+/* Class ẩn nội dung nhưng máy đọc (Screen Reader) vẫn thấy - Tốt cho SEO */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+    margin-top: 0;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--bs-secondary);
+    /* Margin bottom tự động giãn: Mobile 16px -> Desktop 24px */
+    --min: 16;
+    --max: 24;
+    margin-bottom: var(--calc);
+}
+
+/* Cấu hình chi tiết từng thẻ Heading */
+h1,
+.h1 {
+    --min: 32;
+    --max: 48;
+    font-size: var(--calc);
+}
+h2,
+.h2 {
+    --min: 26;
+    --max: 40;
+    font-size: var(--calc);
+}
+h3,
+.h3 {
+    --min: 22;
+    --max: 32;
+    font-size: var(--calc);
+}
+h4,
+.h4 {
+    --min: 20;
+    --max: 28;
+    font-size: var(--calc);
+}
+h5,
+.h5 {
+    --min: 18;
+    --max: 24;
+    font-size: var(--calc);
+}
+h6,
+.h6 {
+    --min: 16;
+    --max: 20;
+    font-size: var(--calc);
+}
+
+p {
+    --min: 14;
+    --max: 16;
+    font-size: var(--calc);
+    margin-bottom: 1.5em; /* Khoảng cách đoạn văn chuẩn */
+}
+
+small,
+.small {
+    --min: 12;
+    --max: 14;
+    font-size: var(--calc);
+    color: var(--color-text-light);
+}
+
+strong,
+.strong {
+    --min: 14;
+    --max: 16;
+    font-size: var(--calc);
+    color: var(--color-text-main);
+}
+
+a {
+    color: var(--bs-primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+a:hover {
+    color: var(--bs-secondary);
+    text-decoration: underline;
+}
+
+/* =========================================
+   4. LAYOUT & CONTAINER SYSTEM
+   ========================================= */
+
+/* Container thông minh: Không bao giờ dính mép */
+.container-wrapper {
+    width: 100%;
+    /* Max width theo thiết kế Figma */
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Padding hông: Mobile 16px -> Desktop 40px */
+    --min: 16;
+    --max: 40;
+    padding-left: var(--calc);
+    padding-right: var(--calc);
+}
+
+/* Grid tự động (Không cần media query col-md-...) */
+.grid-auto-fit {
+    display: grid;
+    /* Mỗi cột tối thiểu 300px, tự xuống dòng nếu hết chỗ */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+    /* Gap: Mobile 16px -> Desktop 32px */
+    --min: 16;
+    --max: 32;
+    gap: var(--calc);
+}
+
+/* Section Spacing (Khoảng cách giữa các khối lớn) */
+.section-spacer {
+    /* Padding Top/Bottom: Mobile 40px -> Desktop 96px */
+    --min: 40;
+    --max: 96;
+    padding-top: var(--calc);
+    padding-bottom: var(--calc);
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =========================================
+   5. FORM SYSTEM (Input, Button)
+   ========================================= */
+
+/* Input tự co giãn padding để dễ bấm trên mobile */
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    --min: 14;
+    --max: 16; /* Font size input */
+    font-size: var(--calc);
+
+    /* Padding input: Mobile 10px -> Desktop 14px */
+    --min: 10;
+    --max: 14;
+    padding: var(--calc);
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #fff;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(224, 74, 42, 0.2);
+}
+
+/* Button chuẩn */
+.btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition:
+        transform 0.2s,
+        background-color 0.2s;
+
+    /* Padding nút: Mobile 10px -> Desktop 14px */
+    --min: 10;
+    --max: 14;
+    padding: var(--calc) calc(var(--calc) * 2); /* Height x Width */
+
+    /* Font size nút */
+    --min: 14;
+    --max: 16;
+    font-size: var(--calc);
+}
+
+/* =========================================
+   6. IMAGE & MEDIA
+   ========================================= */
+img,
+picture,
+svg,
+canvas,
+video,
+iframe {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Fix lỗi khoảng trắng dưới ảnh */
+}
+
+/* Class ép tỉ lệ ảnh (Cực quan trọng để không vỡ layout) */
+.ratio-cover {
+    width: 100%;
+    object-fit: cover;
+}
+.aspect-16-9 {
+    aspect-ratio: 16/9;
+}
+.aspect-4-3 {
+    aspect-ratio: 4/3;
+}
+.aspect-1-1 {
+    aspect-ratio: 1/1;
+}
+
+/* Bo góc thông minh */
+.rounded-fluid {
+    --min: 8;
+    --max: 16;
+    border-radius: var(--calc);
+}
+
+/* =========================================
+   7. TABLE STYLES (Responsive Table)
+   ========================================= */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto; /* Cho phép cuộn ngang trên mobile */
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 2rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.table-base {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Đảm bảo bảng không bị bóp nát trên mobile */
+}
+
+.table-base th,
+.table-base td {
+    text-align: left;
+    /* Padding ô: Mobile 10px -> Desktop 16px */
+    --min: 10;
+    --max: 16;
+    padding: var(--calc);
+    border-bottom: 1px solid #eee;
+}
+
+.table-base th {
+    background-color: #f8f9fa;
+    font-weight: 700;
+    color: var(--bs-secondary);
+}
+
+/* =========================================
+   8. UTILITIES / HELPER CLASSES
+   ========================================= */
+
+/* A. Spacing Helpers (Padding/Margin Fluid) */
+.pd-sm {
+    --min: 10;
+    --max: 20;
+    padding: var(--calc) !important;
+}
+.pd-md {
+    --min: 20;
+    --max: 40;
+    padding: var(--calc) !important;
+}
+.pd-lg {
+    --min: 40;
+    --max: 80;
+    padding: var(--calc) !important;
+}
+.pd-xl {
+    --min: 80;
+    --max: 120;
+    padding: var(--calc) !important;
+}
+
+.pd-y-sm {
+    --min: 10;
+    --max: 20;
+    padding-top: var(--calc) !important;
+    padding-bottom: var(--calc) !important;
+}
+.pd-y-md {
+    --min: 20;
+    --max: 40;
+    padding-top: var(--calc) !important;
+    padding-bottom: var(--calc) !important;
+}
+.pd-y-lg {
+    --min: 40;
+    --max: 80;
+    padding-top: var(--calc) !important;
+    padding-bottom: var(--calc) !important;
+}
+.pd-y-xl {
+    --min: 80;
+    --max: 120;
+    padding-top: var(--calc) !important;
+    padding-bottom: var(--calc) !important;
+}
+.pd-x-sm {
+    --min: 10;
+    --max: 20;
+    padding-left: var(--calc) !important;
+    padding-right: var(--calc) !important;
+}
+.pd-x-md {
+    --min: 20;
+    --max: 40;
+    padding-left: var(--calc) !important;
+    padding-right: var(--calc) !important;
+}
+.pd-x-lg {
+    --min: 40;
+    --max: 80;
+    padding-left: var(--calc) !important;
+    padding-right: var(--calc) !important;
+}
+.pd-x-xl {
+    --min: 80;
+    --max: 120;
+    padding-left: var(--calc) !important;
+    padding-right: var(--calc) !important;
+}
+
+.mg-b-sm {
+    --min: 10;
+    --max: 20;
+    margin-bottom: var(--calc) !important;
+}
+.mg-b-md {
+    --min: 20;
+    --max: 40;
+    margin-bottom: var(--calc) !important;
+}
+.mg-b-lg {
+    --min: 40;
+    --max: 80;
+    margin-bottom: var(--calc) !important;
+}
+.mg-b-xl {
+    --min: 80;
+    --max: 120;
+    margin-bottom: var(--calc) !important;
+}
+
+.mg-t-sm {
+    --min: 10;
+    --max: 20;
+    margin-top: var(--calc) !important;
+}
+.mg-t-md {
+    --min: 20;
+    --max: 40;
+    margin-top: var(--calc) !important;
+}
+.mg-t-lg {
+    --min: 40;
+    --max: 80;
+    margin-top: var(--calc) !important;
+}
+.mg-t-xl {
+    --min: 80;
+    --max: 120;
+    margin-top: var(--calc) !important;
+}
+
+/* B. Text Utilities */
+.text-limit-1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.text-limit-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.text-limit-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* C. Border & Shadows */
+.border-light {
+    border: 1px solid #e2e8f0;
+}
+.shadow-card {
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
