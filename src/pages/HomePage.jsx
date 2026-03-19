@@ -32,7 +32,6 @@ function HomePage() {
                             <img
                                 src={item.image}
                                 alt=""
-                                srcset=""
                                 width={50}
                                 height={50}
                             />
