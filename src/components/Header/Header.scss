@@ -1,0 +1,11 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0xp 2px 5px rbga(0, 0, 0, 0.1);
+    .menu ul {
+        display: flex;
+        gap: 30px;
+    }
+}
