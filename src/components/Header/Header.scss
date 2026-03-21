@@ -8,4 +8,13 @@
         display: flex;
         gap: 30px;
     }
+    .link {
+        text-decoration: underline;
+        color: inherit;
+        cursor: pointer;
+        &:hover {
+            text-decoration: none;
+            color: rgba(0, 0, 0, 0.8);
+        }
+    }
 }
