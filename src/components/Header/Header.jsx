@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import './Header.scss'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import Sidebar from '@components/Sidebar/Sidebar'
 import LoginForm from '@components/LoginForm/LoginForm'
+import { UserContext } from '@/contexts/UserContext'
 
 function Header() {
     const menuList = [
@@ -13,6 +14,7 @@ function Header() {
 
     const [isOpen, setIsOpen] = useState(false)
     const [currentForm, setCurrentForm] = useState('login')
+    const { userInfo, handleLogout } = useContext(UserContext)
 
     const openLogin = () => {
         setIsOpen(true)
@@ -33,47 +35,63 @@ function Header() {
                             )
                         })}
                         <li>
-                            <button onClick={openLogin}>Login</button>
-
-                            <Sidebar
-                                isOpen={isOpen}
-                                toggleSidebar={() => setIsOpen(false)}
-                            >
+                            {userInfo ? (
                                 <div>
-                                    {currentForm === 'login' ? (
-                                        <div>
-                                            <h2>Đăng nhập</h2>
-                                            <LoginForm />
-                                            <p>
-                                                Chưa có tài khoản{' '}
-                                                <span
-                                                    className="link"
-                                                    onClick={() => {
-                                                        setCurrentForm('signup')
-                                                    }}
-                                                >
-                                                    Đăng ký ngay
-                                                </span>
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <h2>Đăng ký</h2>
-                                            <p>
-                                                Có tài khoản{' '}
-                                                <span
-                                                    className="link"
-                                                    onClick={() => {
-                                                        setCurrentForm('login')
-                                                    }}
-                                                >
-                                                    Đăng nhập ngay
-                                                </span>
-                                            </p>
-                                        </div>
-                                    )}
+                                    <span>Xin chào {userInfo.username}</span>
+                                    {''}
+                                    <button onClick={handleLogout}>
+                                        Logout
+                                    </button>
                                 </div>
-                            </Sidebar>
+                            ) : (
+                                <div>
+                                    <button onClick={openLogin}>Login</button>
+
+                                    <Sidebar
+                                        isOpen={isOpen}
+                                        toggleSidebar={() => setIsOpen(false)}
+                                    >
+                                        <div>
+                                            {currentForm === 'login' ? (
+                                                <div>
+                                                    <h2>Đăng nhập</h2>
+                                                    <LoginForm />
+                                                    <p>
+                                                        Chưa có tài khoản{' '}
+                                                        <span
+                                                            className="link"
+                                                            onClick={() => {
+                                                                setCurrentForm(
+                                                                    'signup'
+                                                                )
+                                                            }}
+                                                        >
+                                                            Đăng ký ngay
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <h2>Đăng ký</h2>
+                                                    <p>
+                                                        Có tài khoản{' '}
+                                                        <span
+                                                            className="link"
+                                                            onClick={() => {
+                                                                setCurrentForm(
+                                                                    'login'
+                                                                )
+                                                            }}
+                                                        >
+                                                            Đăng nhập ngay
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </Sidebar>
+                                </div>
+                            )}
                         </li>
                     </ul>
                 </nav>

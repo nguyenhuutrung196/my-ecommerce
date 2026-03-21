@@ -12,8 +12,6 @@ function HomePage() {
                 )
 
                 setProducts(response.data)
-
-                console.log('Fetching products:', response.data)
             } catch (error) {
                 console.error(error)
             }
