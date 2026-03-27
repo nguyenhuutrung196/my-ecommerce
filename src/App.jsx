@@ -8,6 +8,9 @@ import { UserProvider } from '@/contexts/UserContext'
 import ShopPage from '@pages/ShopPage'
 import { FilterProvider } from '@/contexts/FilterContext'
 import { CartProvider } from '@/contexts/CartContext'
+import CheckoutPage from '@pages/CheckoutPage'
+import PaymentPage from '@pages/PaymentPage'
+import SuccessPage from '@pages/SuccessPage'
 
 function App() {
     return (
@@ -26,6 +29,9 @@ function App() {
                                 </FilterProvider>
                             }
                         />
+                        <Route path="/checkout" element={<CheckoutPage />} />
+                        <Route path="/payment" element={<PaymentPage />} />
+                        <Route path="/success" element={<SuccessPage />} />
                     </Routes>
                     <Footer />
                     <ToastContainer position="bottom-right" autoClose={3000} />

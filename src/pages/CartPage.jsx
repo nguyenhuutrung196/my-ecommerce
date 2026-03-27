@@ -1,5 +1,6 @@
 import { CartContext } from '@/contexts/CartContext'
 import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 
 function CartPage() {
     const { cart, removeFromCart, updateQuantity, totalPrice } =
@@ -86,6 +87,10 @@ function CartPage() {
                 </div>
             ))}
             <h3>Tổng tạm tính: {totalPrice.toFixed(2)}</h3>
+
+            <button>
+                <Link to={'/checkout'}>Thanh toán</Link>
+            </button>
         </>
     )
 }
