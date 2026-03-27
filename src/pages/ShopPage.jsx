@@ -1,4 +1,5 @@
 import FilterBar from '@/components/FilterBar/FilterBar'
+import { CartContext } from '@/contexts/CartContext'
 import { FilterContext } from '@/contexts/FilterContext'
 import axios from 'axios'
 import { useContext, useEffect, useState } from 'react'
@@ -26,6 +27,7 @@ function ShopPage() {
     }, [])
 
     const { filters } = useContext(FilterContext)
+    const { addToCart } = useContext(CartContext)
 
     const filteredProducts = products.filter(item => {
         if (filters.category === 'all') return true
@@ -70,8 +72,10 @@ function ShopPage() {
                                     />
                                     <h6>Danh mục: {item.category}</h6>
                                     <p>Tên: {item.title}</p>
-                                    <p>Giá: {item.price}</p>
-                                    <button>Thêm vào giỏ hàng</button>
+                                    <p>Giá: ${item.price}</p>
+                                    <button onClick={() => addToCart(item)}>
+                                        Thêm vào giỏ hàng
+                                    </button>
                                 </li>
                             ))}
                         </ul>

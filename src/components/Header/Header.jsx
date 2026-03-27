@@ -4,12 +4,14 @@ import { useContext, useState } from 'react'
 import Sidebar from '@components/Sidebar/Sidebar'
 import LoginForm from '@components/LoginForm/LoginForm'
 import { UserContext } from '@/contexts/UserContext'
+import { CartContext } from '@/contexts/CartContext'
 
 function Header() {
     const menuList = [
         { name: 'Home', path: '/' },
         { name: 'Products', path: '/products' },
-        { name: 'About', path: '/about' }
+        { name: 'About', path: '/about' },
+        { name: 'Shop', path: '/shop' }
     ]
 
     const [isOpen, setIsOpen] = useState(false)
@@ -20,6 +22,8 @@ function Header() {
         setIsOpen(true)
         setCurrentForm('login')
     }
+
+    const { totalQuantity } = useContext(CartContext)
 
     return (
         <>
@@ -93,6 +97,23 @@ function Header() {
                                 </div>
                             )}
                         </li>
+                        <Link to={'/cart'}>
+                            <div className="cart" style={{ cursor: 'pointer' }}>
+                                🛒 Giỏ hàng
+                                {totalQuantity > 0 && (
+                                    <span
+                                        className="cart-count"
+                                        style={{
+                                            color: 'red',
+                                            fontWeight: 'bold',
+                                            marginLeft: '6px'
+                                        }}
+                                    >
+                                        {totalQuantity}
+                                    </span>
+                                )}
+                            </div>
+                        </Link>
                     </ul>
                 </nav>
             </header>

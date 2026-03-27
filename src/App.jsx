@@ -4,30 +4,33 @@ import HomePage from '@pages/HomePage'
 import CartPage from '@pages/CartPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { UserProvider } from './contexts/UserContext'
+import { UserProvider } from '@/contexts/UserContext'
 import ShopPage from '@pages/ShopPage'
 import { FilterProvider } from '@/contexts/FilterContext'
+import { CartProvider } from '@/contexts/CartContext'
 
 function App() {
     return (
         <UserProvider>
-            <BrowserRouter>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/cart" element={<CartPage />} />
-                    <Route
-                        path="/shop"
-                        element={
-                            <FilterProvider>
-                                <ShopPage />
-                            </FilterProvider>
-                        }
-                    />
-                </Routes>
-                <Footer />
-                <ToastContainer position="bottom-right" autoClose={3000} />
-            </BrowserRouter>
+            <CartProvider>
+                <BrowserRouter>
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route
+                            path="/shop"
+                            element={
+                                <FilterProvider>
+                                    <ShopPage />
+                                </FilterProvider>
+                            }
+                        />
+                    </Routes>
+                    <Footer />
+                    <ToastContainer position="bottom-right" autoClose={3000} />
+                </BrowserRouter>
+            </CartProvider>
         </UserProvider>
     )
 }
