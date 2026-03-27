@@ -11,6 +11,7 @@ import { CartProvider } from '@/contexts/CartContext'
 import CheckoutPage from '@pages/CheckoutPage'
 import PaymentPage from '@pages/PaymentPage'
 import SuccessPage from '@pages/SuccessPage'
+import CounterAppPage from '@pages/CounterApp'
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/checkout" element={<CheckoutPage />} />
                         <Route path="/payment" element={<PaymentPage />} />
                         <Route path="/success" element={<SuccessPage />} />
+                        <Route path="/counter" element={<CounterAppPage />} />
                     </Routes>
                     <Footer />
                     <ToastContainer position="bottom-right" autoClose={3000} />
